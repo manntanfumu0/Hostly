@@ -1,26 +1,9 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
+import 'dotenv/config'
 
-import { authRoutes } from "./routes/auth.routes";
+import { app } from './app'
 
-dotenv.config();
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-app.use("/auth", authRoutes);
-
-app.get("/", (request, response) => {
-  return response.json({
-    message: "Hostly API running 🚀",
-  });
-});
-
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT || 3333
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  console.log(`🚀 Server running on port ${PORT}`)
+})
