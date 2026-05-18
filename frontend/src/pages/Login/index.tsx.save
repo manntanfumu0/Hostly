@@ -1,0 +1,69 @@
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+
+export function Login(    const response = await fetch(
+      'http://localhost:3333/auth/signin',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      }
+    )
+
+    const data = await response.json()
+
+    localStorage.setItem(
+      '@hostly:token',
+      data.token
+    )
+
+    localStorage.setItem(
+      '@hostly:user',
+      JSON.stringify(data.user)
+    )
+
+    navigate('/')
+  }
+
+  return (
+    <div className="min-h-screen bg-black text-white flex items-center justify-center">
+
+      <form
+        onSubmit={handleLogin}
+        className="w-full max-w-md border border-zinc-800 bg-zinc-900/40 rounded-2xl p-8"
+      >
+
+        <h1 className="text-3xl font-bold mb-6">
+          Login
+        </h1>
+
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full bg-black border border-zinc-800 rounded-lg px-4 py-3 mb-4"
+          onChange={event =>
+            setEmail(event.target.value)
+          }
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full bg-black border border-zinc-800 rounded-lg px-4 py-3 mb-6"
+          onChange={event =>
+            setPassword(event.target.value)
+          }
+        />
+
+        <button
+          className="w-full bg-white text-black py-3 rounded-lg font-medium"
+        >
+          Entrar
+        </button>
+
+        <p className="text-zinc-400 mt-6 text
