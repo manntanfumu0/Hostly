@@ -1,17 +1,30 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+
+import { api } from '../../services/api'
 
 interface Props {
   onClose: () => void
 }
 
 export function CreateProjectModal({ onClose }: Props) {
+  const queryClient = useQueryClient()
+
   const [name, setName] = useState('')
   const [framework, setFramework] = useState('React')
+  const [description, setDescription] = useState('')
 
-  function handleCreateProject() {
-    console.log({
+  async function handleCreateProject() {
+    if (!name) return
+
+    await api.post('/projects', {
       name,
-      framework
+      framework,
+      description
+    })
+
+    queryClient.invalidateQueries({
+      queryKey: ['projects']
     })
 
     onClose()
@@ -42,6 +55,13 @@ export function CreateProjectModal({ onClose }: Props) {
             className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white outline-none"
           />
 
+          <textarea
+            placeholder="Descrição"
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white outline-none"
+          />
+
           <select
             value={framework}
             onChange={e => setFramework(e.target.value)}
@@ -51,6 +71,7 @@ export function CreateProjectModal({ onClose }: Props) {
             <option>Next.js</option>
             <option>Vue</option>
             <option>Angular</option>
+            <option>Node.js</option>
           </select>
 
           <button
@@ -64,4 +85,3 @@ export function CreateProjectModal({ onClose }: Props) {
     </div>
   )
 }
-

@@ -1,41 +1,60 @@
-import { Request, Response } from "express";
-import { AuthService } from "../services/auth.service";
+import { Request, Response } from 'express'
 
-const authService = new AuthService();
+import { AuthService } from '../services/auth.service'
+
+const authService = new AuthService()
 
 export class AuthController {
-  async register(request: Request, response: Response) {
-    try {
-      const { name, email, password } = request.body;
 
-      const user = await authService.register({
+  async signup(request: Request, response: Response) {
+
+    try {
+
+      const {
         name,
         email,
-        password,
-      });
+        password
+      } = request.body
 
-      return response.status(201).json(user);
+      const user = await authService.signup({
+        name,
+        email,
+        password
+      })
+
+      return response.status(201).json(user)
+
     } catch (error) {
+
       return response.status(400).json({
-        error: (error as Error).message,
-      });
+        error: (error as Error).message
+      })
+
     }
   }
 
-  async login(request: Request, response: Response) {
-    try {
-      const { email, password } = request.body;
+  async signin(request: Request, response: Response) {
 
-      const result = await authService.login(
+    try {
+
+      const {
         email,
         password
-      );
+      } = request.body
 
-      return response.json(result);
+      const result = await authService.signin({
+        email,
+        password
+      })
+
+      return response.json(result)
+
     } catch (error) {
+
       return response.status(400).json({
-        error: (error as Error).message,
-      });
+        error: (error as Error).message
+      })
+
     }
   }
 }

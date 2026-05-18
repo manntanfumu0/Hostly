@@ -1,18 +1,21 @@
-import { Router } from "express";
-import { AuthController } from "../controllers/auth.controller";
+import { Router } from 'express'
 
-const authRoutes = Router();
+import { AuthController }
+  from '../controllers/auth.controller'
 
-const authController = new AuthController();
+const authRoutes = Router()
 
-authRoutes.post(
-  "/register",
-  authController.register
-);
+const authController =
+  new AuthController()
 
 authRoutes.post(
-  "/login",
-  authController.login
-);
+  '/signup',
+  authController.signup
+)
 
-export { authRoutes };
+authRoutes.post(
+  '/signin',
+  authController.signin
+)
+
+export { authRoutes }

@@ -1,75 +1,89 @@
-import { prisma } from "../lib/prisma";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
-interface RegisterData {
-  name: string;
-  email: string;
-  password: string;
+import { prisma } from '../database/prisma'
+
+interface SignupDTO {
+  name: string
+  email: string
+  password: string
+}
+
+interface SigninDTO {
+  email: string
+  password: string
 }
 
 export class AuthService {
-  async register({ name, email, password }: RegisterData) {
-    const userAlreadyExists = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
+
+  async signup({
+    name,
+    email,
+    password
+  }: SignupDTO) {
+
+    const userAlreadyExists =
+      await prisma.user.findUnique({
+        where: {
+          email
+        }
+      })
 
     if (userAlreadyExists) {
-      throw new Error("User already exists");
+      throw new Error('User already exists')
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword =
+      await bcrypt.hash(password, 8)
 
     const user = await prisma.user.create({
       data: {
         name,
         email,
-        password: hashedPassword,
-      },
-    });
+        password: hashedPassword
+      }
+    })
 
-    const { password: _, ...userWithoutPassword } = user;
-
-    return userWithoutPassword;
+    return user
   }
 
-  async login(email: string, password: string) {
+  async signin({
+    email,
+    password
+  }: SigninDTO) {
+
     const user = await prisma.user.findUnique({
       where: {
-        email,
-      },
-    });
+        email
+      }
+    })
 
     if (!user) {
-      throw new Error("Invalid credentials");
+      throw new Error('Invalid credentials')
     }
 
-    const passwordMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const passwordMatch =
+      await bcrypt.compare(
+        password,
+        user.password
+      )
 
     if (!passwordMatch) {
-      throw new Error("Invalid credentials");
+      throw new Error('Invalid credentials')
     }
 
     const token = jwt.sign(
+      {},
+      process.env.JWT_SECRET!,
       {
-        userId: user.id,
-      },
-      process.env.JWT_SECRET as string,
-      {
-        expiresIn: "7d",
+        subject: user.id,
+        expiresIn: '7d'
       }
-    );
-
-    const { password: _, ...userWithoutPassword } = user;
+    )
 
     return {
-      user: userWithoutPassword,
-      token,
-    };
+      user,
+      token
+    }
   }
 }

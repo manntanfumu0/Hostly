@@ -8,6 +8,8 @@ const projectsController = new ProjectsController()
 
 projectsRoutes.get('/', projectsController.getAll)
 
+projectsRoutes.get('/:slug', projectsController.getBySlug)
+
 projectsRoutes.post('/', projectsController.create)
 
 export { projectsRoutes }
